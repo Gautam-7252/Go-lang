@@ -21,7 +21,7 @@ var db *sql.DB
 
 func main() {
 	var err error
-	tpl, err = template.ParseGlob("E:\\VScode\\GoLang\\main\\templates\\index.html")
+	tpl, err = template.ParseGlob("E:\\VScode\\GoLang\\SQL\\templates\\index.html")
 	if err != nil {
 		panic(err)
 	}
