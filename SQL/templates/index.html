@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h2> SELECT QUERY</h2>
+		<form action="/search" method="POST">
+			<label for="EmployeeName">Employee Name :</label><br>
+			<input type="text" id="EmployeeName" name="EmployeeName" value="shawn"> <br>
+			<input type="submit" value="Search">
+		</form>
+
+		{{if .}}
+		<ul>
+			<li>Id: {{.ID}}</li>
+			<li>Firstname: {{.Firstname}}</li>
+			<li>Lastname: {{.Lastname}}</li>
+		</ul>
+		{{end}}
+	</body>
+</html>
