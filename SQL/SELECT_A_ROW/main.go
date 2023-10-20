@@ -33,7 +33,11 @@ func main() {
 	}
 	fmt.Println("SQL Connection Established!")
 	defer db.Close()
-
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("Error during db.Ping")
+		panic(err.Error())
+	}
 	fmt.Println("Successfull connection with Database!")
 
 	http.HandleFunc("/search", searchhandler)
@@ -42,7 +46,6 @@ func main() {
 func searchhandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		tpl.ExecuteTemplate(w, "index.html", nil)
-		fmt.Println("GET ERROR")
 		return
 	}
 	r.ParseForm()
@@ -51,8 +54,6 @@ func searchhandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(firstname)
 	stmt := "SELECT * FROM customer WHERE firstname = ?;"
 	row := db.QueryRow(stmt, firstname)
-	fmt.Println("row")
-
 	err := row.Scan(&E.ID, &E.Firstname, &E.Lastname)
 	if err != nil {
 		panic(err)
