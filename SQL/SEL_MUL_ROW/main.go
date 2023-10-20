@@ -10,7 +10,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type Employee struct {
+type Customer struct {
 	Id        int
 	Firstname string
 	Lastname  string
@@ -57,14 +57,14 @@ func search(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	defer row.Close()
-	var Emp []Employee
+	var Cust []Customer
 	for row.Next() {
-		var E Employee
+		var E Customer
 		err = row.Scan(&E.Id, &E.Firstname, &E.Lastname)
 		if err != nil {
 			panic(err)
 		}
-		Emp = append(Emp, E)
+		Cust = append(Cust, E)
 	}
-	tpl.ExecuteTemplate(w, "index2.html", Emp)
+	tpl.ExecuteTemplate(w, "index2.html", Cust)
 }

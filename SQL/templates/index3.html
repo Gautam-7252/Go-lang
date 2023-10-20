@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h2>Cutomers List</h2>
+		
+		<br>
+		<br>
+		<ul>
+			{{range .}}
+			<li>Id: {{.Id}}</li>
+			<li>Firstname: {{.Firstname}}</li>
+			<li>Lastname: {{.Lastname}}</li>
+			<br>
+			{{end}}
+		</ul>
+	</body>
+</html>
