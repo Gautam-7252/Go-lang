@@ -41,6 +41,7 @@ func main() {
 	fmt.Println("Successfull Database Connection")
 	http.HandleFunc("/search", searchhandler)
 	http.HandleFunc("/insert", inserthandler)
+	http.HandleFunc("/delete/", deletehandler)
 	http.ListenAndServe("localhost:8000", nil)
 }
 
@@ -61,7 +62,7 @@ func searchhandler(w http.ResponseWriter, r *http.Request) {
 		}
 		Cust = append(Cust, E)
 	}
-	tpl.ExecuteTemplate(w, "index3.html", Cust)
+	tpl.ExecuteTemplate(w, "browse.html", Cust)
 }
 
 func inserthandler(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +89,28 @@ func inserthandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Error Inserting row", err)
 		tpl.ExecuteTemplate(w, "insert.html", "Please fill all the fields.")
 	}
-	fmt.Println(fname, lname, Custid)
 	fmt.Println("Successfully Inserted in the Database!")
 	tpl.ExecuteTemplate(w, "insert.html", "Successfully Inserted")
+}
+
+func deletehandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	Custid := r.FormValue("CustId")
+	fmt.Println(Custid)
+	var del *sql.Stmt
+	var err error
+	del, err = db.Prepare("DELETE FROM `test2`.`customer` WHERE (`idcustomer`=?);")
+	fmt.Println("Inside Delete")
+	if err != nil {
+		fmt.Println("Error in Delete Statement")
+		panic(err)
+	}
+	defer del.Close()
+	insert, err := del.Exec(Custid)
+	rowaffected, _ := insert.RowsAffected()
+	if err != nil || rowaffected != 1 {
+		fmt.Println("Error Deleting row", err)
+		tpl.ExecuteTemplate(w, "delete.html", "Error Deleting the row")
+	}
+	tpl.ExecuteTemplate(w, "delete.html", "Deleted Successfully")
 }
