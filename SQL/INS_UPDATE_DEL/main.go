@@ -42,6 +42,8 @@ func main() {
 	http.HandleFunc("/search", searchhandler)
 	http.HandleFunc("/insert", inserthandler)
 	http.HandleFunc("/delete/", deletehandler)
+	http.HandleFunc("/update/", updatehandler)
+	http.HandleFunc("/updateresult/", updateresult)
 	http.ListenAndServe("localhost:8000", nil)
 }
 
@@ -113,4 +115,42 @@ func deletehandler(w http.ResponseWriter, r *http.Request) {
 		tpl.ExecuteTemplate(w, "delete.html", "Error Deleting the row")
 	}
 	tpl.ExecuteTemplate(w, "delete.html", "Deleted Successfully")
+}
+
+func updatehandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	Custid := r.FormValue("CustId")
+	row := db.QueryRow("SELECT * FROM test2.customer WHERE idcustomer = ?;", Custid)
+	var E Customer
+	// func (r *Row) Scan(dest ...interface{}) error
+	err := row.Scan(&E.Id, &E.Firstname, &E.Lastname)
+	if err != nil {
+		fmt.Println(err)
+		http.Redirect(w, r, "/search", 307)
+		return
+	}
+	tpl.ExecuteTemplate(w, "update.html", E)
+}
+
+func updateresult(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	Custid := r.FormValue("CustId")
+	fname := r.FormValue("fname")
+	lname := r.FormValue("lname")
+	upStmt := "UPDATE `test2`.`customer` SET `firstname` = ?, `lastname` = ? WHERE (`idcustomer` = ?);"
+	stmt, err := db.Prepare(upStmt)
+	if err != nil {
+		fmt.Println("error preparing stmt")
+		panic(err)
+	}
+	defer stmt.Close()
+	var res sql.Result
+	res, err = stmt.Exec(fname, lname, Custid)
+	rowsAff, _ := res.RowsAffected()
+	if err != nil || rowsAff != 1 {
+		fmt.Println(err)
+		tpl.ExecuteTemplate(w, "result.html", "Error in update")
+		return
+	}
+	tpl.ExecuteTemplate(w, "result.html", "Successfully Updated")
 }
