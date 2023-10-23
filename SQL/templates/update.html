@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h2>UPDATE</h2>
+		<form action="/updateresult/?idproducts={{.Id}}" method="POST">
+			<label for="Customerid ">Customer ID :</label><br>
+			<input type="number" id="Customerid" name="CustId" value="{{.Id}}"><br>
+			<label for="CustomerFName ">Customer FirstName :</label><br>
+			<input type="text" id="CustomerFName" name="fname" value="{{.Firstname}}"><br>
+			<label for="CustomerLName ">Customer LastName :</label><br>
+			<input type="text" id="CustomerLName" name="lname" value="{{.Lastname}}"><br>
+			<input type="submit" value="Submit"><br>
+		</form>
+		<button> <a href="/search">Customer Homepage </a> </button>
+		<br>
+		<br>
+	</body>
+</html>

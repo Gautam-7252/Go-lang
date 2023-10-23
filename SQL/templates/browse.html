@@ -4,12 +4,16 @@
 		<h2>Cutomers List</h2>
 		
 		<br>
+		<button> <a href="/insert">Insert</a> </button>
 		<br>
 		<ul>
 			{{range .}}
 			<li>Id: {{.Id}}</li>
 			<li>Firstname: {{.Firstname}}</li>
 			<li>Lastname: {{.Lastname}}</li>
+			<button> <a href="/update/?CustId={{.Id}}">Edit</a> </button>
+			<button> <a href="/delete/?CustId={{.Id}}">Delete</a> </button>
+			<br>
 			<br>
 			{{end}}
 		</ul>
