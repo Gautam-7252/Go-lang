@@ -76,23 +76,31 @@ func inserthandler(w http.ResponseWriter, r *http.Request) {
 	Custid := r.FormValue("CustId")
 	fname := r.FormValue("fname")
 	lname := r.FormValue("lname")
-	var ins *sql.Stmt
-	var err error
-	ins, err = db.Prepare("INSERT INTO `test2`.`customer` (`idcustomer`, `firstname`, `lastname`) VALUES ( ?, ?, ?);")
-	fmt.Println("Inside Insert")
+
+	row := db.QueryRow("SELECT * FROM test2.customer WHERE idcustomer = ?;", Custid)
+	var E Customer
+	err := row.Scan(&E.Id, &E.Firstname, &E.Lastname)
 	if err != nil {
-		fmt.Println("Error in Insert Statement")
-		panic(err)
+		var ins *sql.Stmt
+
+		ins, err = db.Prepare("INSERT INTO `test2`.`customer` (`idcustomer`, `firstname`, `lastname`) VALUES ( ?, ?, ?);")
+		fmt.Println("Inside Insert")
+		if err != nil {
+			fmt.Println("Error in Insert Statement")
+			panic(err)
+		}
+		defer ins.Close()
+		insert, err := ins.Exec(Custid, fname, lname)
+		rowaffected, _ := insert.RowsAffected()
+		if err != nil || rowaffected != 1 {
+			fmt.Println("Error Inserting row", err)
+			tpl.ExecuteTemplate(w, "insert.html", "Please fill all the fields.")
+		}
+		fmt.Println("Successfully Inserted in the Database!")
+		tpl.ExecuteTemplate(w, "insert.html", "Successfully Inserted")
+	} else {
+		tpl.ExecuteTemplate(w, "insert.html", "Data/ID Already Exists, Please Provide new Data or change the ID.")
 	}
-	defer ins.Close()
-	insert, err := ins.Exec(Custid, fname, lname)
-	rowaffected, _ := insert.RowsAffected()
-	if err != nil || rowaffected != 1 {
-		fmt.Println("Error Inserting row", err)
-		tpl.ExecuteTemplate(w, "insert.html", "Please fill all the fields.")
-	}
-	fmt.Println("Successfully Inserted in the Database!")
-	tpl.ExecuteTemplate(w, "insert.html", "Successfully Inserted")
 }
 
 func deletehandler(w http.ResponseWriter, r *http.Request) {
@@ -149,7 +157,7 @@ func updateresult(w http.ResponseWriter, r *http.Request) {
 	rowsAff, _ := res.RowsAffected()
 	if err != nil || rowsAff != 1 {
 		fmt.Println(err)
-		tpl.ExecuteTemplate(w, "result.html", "Error in update")
+		tpl.ExecuteTemplate(w, "result.html", "No Changes Were Made")
 		return
 	}
 	tpl.ExecuteTemplate(w, "result.html", "Successfully Updated")
