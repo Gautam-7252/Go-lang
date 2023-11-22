@@ -11,9 +11,8 @@
 //   - "Lucky 7": when the total roll is 7
 //   - "Even": when the total roll is even
 //   - "Odd": when the total roll is odd
-//
-// * The program must use variables to configure:
-//   - number of times to roll the dice
+//   - The program must use variables to configure:
+//     -number of times to roll the dice
 //   - number of dice used in the rolls
 //   - number of sides of all the dice (6-sided, 10-sided, etc determined
 //     with a variable). All dice must use the same variable for number
@@ -35,28 +34,28 @@ func roll(sides int) int {
 }
 func main() {
 	rand.Seed(time.Now().UnixNano())
-	dice, sides := 2, 12
-	rolls := 1
+	dice, sides := 2, 6 //   - number of dice used in the rolls,- number of sides of all the dice
+	rolls := 1          //    -number of times to roll the dice
+	sum := 0
 	for i := 1; i <= rolls; i++ {
-		sum := 0
 		for j := 1; j <= dice; j++ {
-			rolled := roll(sides)
-			sum = sum + rolled
-			fmt.Println("Roll #", i, ", dice #", j, ":", rolled)
+			roll := roll(sides)
+			sum += roll
+			fmt.Println("Roll:", i, "and dice:", j, " \nRolled:", roll)
 		}
-		fmt.Println("Sum :- ", sum)
+		fmt.Println("Sum:", sum)
 		switch sum := sum; {
-		//	 - "Snake eyes": when the total roll is 2, and total dice is 2
-		case sum == 2:
-			fmt.Println("Snake eyes")
-		//   - "Lucky 7": when the total roll is 7
+		case sum == 2 && dice == 2:
+			//  - "Snake eyes": when the total roll is 2, and total dice is 2
+			fmt.Println("Snake Eyes!")
 		case sum == 7:
-			fmt.Println("Lucky 7")
-		//   - "Even": when the total roll is even
+			//  - "Lucky 7": when the total roll is 7
+			fmt.Println("Lucky Seven!")
 		case sum%2 == 0:
+			//  - "Even": when the total roll is even
 			fmt.Println("Even")
-		//   - "Odd": when the total roll is odd
 		case sum%2 == 1:
+			//  - "Odd": when the total roll is odd
 			fmt.Println("Odd")
 		}
 	}
