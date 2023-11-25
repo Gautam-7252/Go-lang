@@ -18,4 +18,50 @@
 //  - change server status of all servers to `Maintenance`
 //  - call display server info function
 
+package main
 
+import "fmt"
+
+const (
+	Online      = 0
+	Offline     = 1
+	Maintenance = 2
+	Retired     = 3
+)
+
+func printstatus(list map[string]int) {
+	status := map[int]int{}
+	for _, value := range list {
+		switch value {
+		case Online:
+			status[Online] += 1
+		case Offline:
+			status[Offline] += 1
+		case Maintenance:
+			status[Maintenance] += 1
+		case Retired:
+			status[Retired] += 1
+		}
+	}
+	fmt.Println("\nTotal servers :", len(list))
+	fmt.Println("Online servers :", status[Online])
+	fmt.Println("Offline servers :", status[Offline])
+	fmt.Println("Maintenance servers :", status[Maintenance])
+	fmt.Println("Retired servers :", status[Retired])
+}
+func main() {
+	ServerList := map[string]int{
+		"flipkart": Online,
+		"darkstar": Online,
+		"aiur":     Online,
+		"amazon":   Online,
+		"google":   Online,
+	}
+	printstatus(ServerList)
+	// change server status of `darkstar` to `Retired`
+	ServerList["darkstar"] = Retired
+	printstatus(ServerList)
+	// change server status of `aiur` to `Offline`
+	ServerList["aiur"] = Offline
+	printstatus(ServerList)
+}
